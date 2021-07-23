@@ -88,14 +88,26 @@
 					//z plane
 					const sliceZ = volume.extractSlice( 'z', Math.floor( volume.RASDimensions[ 2 ] / 4 ) );
 					scene.add( sliceZ.mesh );
+					for ( let index = 0; index < volume.RASDimensions[ 2 ]; index ++ ) {
+						const sliceZ = volume.extractSlice( 'z', index );
+						scene.add( sliceZ.mesh );
+					}
 
 					//y plane
 					const sliceY = volume.extractSlice( 'y', Math.floor( volume.RASDimensions[ 1 ] / 2 ) );
 					scene.add( sliceY.mesh );
+					for ( let index = 0; index < volume.RASDimensions[ 1 ]; index ++ ) {
+						const sliceY = volume.extractSlice( 'y', index );
+						scene.add( sliceY.mesh );
+					}
 
 					//x plane
 					const sliceX = volume.extractSlice( 'x', Math.floor( volume.RASDimensions[ 0 ] / 2 ) );
 					scene.add( sliceX.mesh );
+					for ( let index = 0; index < volume.RASDimensions[ 0 ]; index ++ ) {
+						const sliceX = volume.extractSlice( 'x', index );
+						scene.add( sliceX.mesh );
+					}
 
 					gui.add( sliceX, "index", 0, volume.RASDimensions[ 0 ], 1 ).name( "indexX" ).onChange( function () {
 

@@ -87,6 +87,12 @@ function VolumeSlice( volume, index, axis ) {
 	 */
 
 	/**
+	 * @member {ImageData | null} imageCache The cached version of the last accessed image data. If null, the cache is invalidated.
+	 */
+
+	this.imageCache = null;
+
+	/**
 	 * @member {Function} sliceAccess Function that allow the slice to access right data
 	 * @see Volume.extractPerpendicularPlane
 	 * @param {Number} i The first coordinate
@@ -120,9 +126,14 @@ VolumeSlice.prototype = {
 			canvas = this.canvasBuffer,
 			ctx = this.ctxBuffer;
 
+		if ( this.imageCache === null ) {
+
+			this.imageCache = ctx.getImageData( 0, 0, iLength, jLength );
+
+		}
 
 		// get the imageData and pixel array from the canvas
-		var imgData = ctx.getImageData( 0, 0, iLength, jLength );
+		var imgData = this.imageCache;
 		var data = imgData.data;
 		var volumeData = volume.data;
 		var upperThreshold = volume.upperThreshold;
@@ -196,8 +207,21 @@ VolumeSlice.prototype = {
 
 		var extracted = this.volume.extractPerpendicularPlane( this.axis, this.index );
 		this.sliceAccess = extracted.sliceAccess;
-		this.jLength = extracted.jLength;
-		this.iLength = extracted.iLength;
+
+		if ( this.iLength !== extracted.iLength ) {
+
+			this.iLength = extracted.iLength;
+			this.imageCache = null;
+
+		}
+
+		if ( this.jLength !== extracted.jLength ) {
+
+			this.jLength = extracted.jLength;
+			this.imageCache = null;
+
+		}
+
 		this.matrix = extracted.matrix;
 
 		this.canvas.width = extracted.planeWidth;

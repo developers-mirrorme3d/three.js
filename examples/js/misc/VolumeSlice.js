@@ -164,21 +164,26 @@
 
 			} else {
 
-				for ( var j = 0; j < jLength; j ++ ) {
+				var j = jLength;
 
-					for ( var i = 0; i < iLength; i ++ ) {
+				while ( j -- ) {
+
+					var i = iLength;
+
+					while ( i -- ) {
 
 						var value = volumeData[ sliceAccess( i, j ) ];
 						var alpha = 0xff; //apply threshold
 
 						alpha = upperThreshold >= value ? lowerThreshold <= value ? alpha : 0 : 0; //apply window level
 
-						value = Math.floor( 255 * ( value - windowLow ) / ( windowHigh - windowLow ) );
-						value = value > 255 ? 255 : value < 0 ? 0 : value | 0;
-						data[ 4 * pixelCount ] = value;
-						data[ 4 * pixelCount + 1 ] = value;
-						data[ 4 * pixelCount + 2 ] = value;
-						data[ 4 * pixelCount + 3 ] = alpha;
+						value = ~~( 255 * ( value - windowLow ) / ( windowHigh - windowLow ) );
+						value = Math.min( Math.max( 0, value ), 255 );
+						var start = 4 * pixelCount;
+						data[ start ] = value;
+						data[ start + 1 ] = value;
+						data[ start + 2 ] = value;
+						data[ start + 3 ] = alpha;
 						pixelCount ++;
 
 					}
@@ -187,7 +192,7 @@
 
 			}
 
-			ctx.putImageData( imgData, 0, 0 );
+			// ctx.putImageData( imgData, 0, 0 );
 			this.ctx.drawImage( canvas, 0, 0, iLength, jLength, 0, 0, this.canvas.width, this.canvas.height );
 			this.mesh.material.map.needsUpdate = true;
 
